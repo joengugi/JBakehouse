@@ -40,10 +40,10 @@ const SLIDES = [
     headline: ["Bread as it", "Was Always", "Meant to Be."],
     highlightLine: 2,
     body: "Our sourdoughs are cold-fermented for 72 hours using heritage Kenyan wheat flour. No shortcuts. No preservatives. Just flour, water, salt and time.",
-    cta:  "See Our Breads →",
+    cta:  "Browse our baked goods →",
   },
   {
-    image:    "/Baked3.jpg",
+    image:    "/Baked4.jpg",
     eyebrow:  "Custom cakes · pastries · tarts",
     headline: ["Every Occasion", "Deserves", "Something Special."],
     highlightLine: 1,
@@ -52,7 +52,7 @@ const SLIDES = [
   },
 ];
 
-const AUTO_PLAY_MS = 5500; // auto-advance interval
+const AUTO_PLAY_MS = 6500; // auto-advance interval
 
 // ── Inline styles injected once ─────────────────────────────
 const HERO_CSS = `
