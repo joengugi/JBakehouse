@@ -1,4 +1,6 @@
+"use client";
 
+import { useState } from "react";
 
 const T = {
   greenDeep:   "#0A1F0D",
@@ -13,7 +15,6 @@ const T = {
   black:       "#080C08",
 };
 
-
 const BAKERY_INFO = {
   name: "Jomos Bakehouse",
   tagline: "Handcrafted with love, baked fresh every morning",
@@ -25,6 +26,19 @@ const BAKERY_INFO = {
 };
 
 export default function ContactSection() {
+  const [email, setEmail] = useState("");
+  const [concerns, setConcerns] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = () => {
+    if (email && concerns) {
+      setSubmitted(true);
+      setEmail("");
+      setConcerns("");
+      setTimeout(() => setSubmitted(false), 3000);
+    }
+  };
+
   return (
     <section id="contact" style={{ background: T.yellowPale, padding: "110px 2.5rem" }}>
       <div style={{ maxWidth: "1240px", margin: "0 auto" }}>
@@ -34,6 +48,62 @@ export default function ContactSection() {
           <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.2rem, 4vw, 3.5rem)", fontWeight: 700, color: T.greenDeep }}>
             Say Hello
           </h2>
+        </div>
+
+        {/* Contact Form */}
+        <div style={{ maxWidth: "600px", margin: "0 auto 3rem", padding: "2rem", background: "#fff", borderRadius: "8px", border: `1px solid rgba(10,31,13,0.1)` }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
+            <div>
+              <label style={{ display: "block", fontFamily: "'Outfit', sans-serif", fontSize: "0.8rem", color: T.greenBrand, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.6rem" }}>Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your.email@example.com"
+                style={{
+                  width: "100%", padding: "0.9rem 1rem", fontFamily: "'Outfit', sans-serif",
+                  fontSize: "0.95rem", color: T.greenDeep,
+                  border: `1px solid rgba(10,31,13,0.15)`, borderRadius: "5px",
+                  boxSizing: "border-box",
+                }}
+              />
+            </div>
+
+            <div>
+              <label style={{ display: "block", fontFamily: "'Outfit', sans-serif", fontSize: "0.8rem", color: T.greenBrand, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.6rem" }}>Your Message</label>
+              <textarea
+                value={concerns}
+                onChange={(e) => setConcerns(e.target.value)}
+                placeholder="Tell us your concerns or feedback..."
+                style={{
+                  width: "100%", padding: "0.9rem 1rem", fontFamily: "'Outfit', sans-serif",
+                  fontSize: "0.95rem", color: T.greenDeep,
+                  border: `1px solid rgba(10,31,13,0.15)`, borderRadius: "5px",
+                  boxSizing: "border-box", minHeight: "140px", resize: "none",
+                }}
+              />
+            </div>
+
+            <button
+              onClick={handleSubmit}
+              style={{
+                background: T.greenBrand, color: "#fff",
+                border: "none", borderRadius: "5px", padding: "1rem",
+                cursor: "pointer", fontFamily: "'Outfit', sans-serif",
+                fontWeight: 600, fontSize: "0.95rem", transition: "background 0.3s",
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.background = T.greenLight}
+              onMouseLeave={(e) => e.currentTarget.style.background = T.greenBrand}
+            >
+              Send Message
+            </button>
+
+            {submitted && (
+              <div style={{ padding: "1rem", background: "#E8F5E9", borderRadius: "5px", textAlign: "center", fontFamily: "'Outfit', sans-serif", color: T.greenBrand, fontWeight: 600 }}>
+                ✓ Thanks! We&apos;ll be in touch soon.
+              </div>
+            )}
+          </div>
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2.5rem" }}>

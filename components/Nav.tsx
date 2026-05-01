@@ -1,6 +1,9 @@
 "use client"; 
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
+
+import Logo from "../public/Logo.png"
 
 
 const T = {
@@ -70,7 +73,9 @@ export default function Nav({ count, onCartOpen }: NavProps) {
           background: T.yellowGold,
           display: "flex", alignItems: "center", justifyContent: "center",
           fontSize: "18px",
-        }}>🥐</div>
+        }}>
+          <Image src={Logo} alt="Jomo's Bakehouse Logo" width={36} height={36} style={{ borderRadius: "50%" }} />
+        </div>
         <span style={{
           fontFamily: "'Cormorant Garamond', serif",
           fontSize: "1.45rem", fontWeight: 700, color: T.offWhite,

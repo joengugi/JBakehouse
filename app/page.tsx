@@ -11,6 +11,7 @@ import { useState } from "react";
 import CartDrawer from "@/components/CartDrawer";
 import CheckoutModal from "@/components/CheckoutModal";
 import useCart from "@/components/Carthook";
+import FloatingSocial from "@/components/FloatingSocial";
 export default function App() {
   const { cart, addItem, removeItem, updateQty, total, count } = useCart();
   const [cartOpen,     setCartOpen]     = useState(false);
@@ -29,6 +30,8 @@ export default function App() {
 
       <ContactSection />
       <Footer />
+
+      <FloatingSocial />
 
       {cartOpen && (
         <CartDrawer
