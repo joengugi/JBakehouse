@@ -16,13 +16,13 @@ const T = {
 };
 
 const BAKERY_INFO = {
-  name: "Jomos Bakehouse",
+  name: "Jomos Baker(S)",
   tagline: "Handcrafted with love, baked fresh every morning",
-  phone: "+254 712 345 678",
-  email: "hello@jomosbakehouse.co.ke",
+  phone: "+254 103 990 200",
+  email: "hello@jomosbakers.co.ke",
   address: "108 Power Gachie, Nairobi",
-  hours: "Mon–Sat: 6:30 AM – 7:00 PM  |  Sun: 7:00 AM – 4:00 PM",
-  facebook: "Jomosbakehouse",
+  hours: "Mon – Sat: 6:30 AM – 7:00 PM  |  Sun: 7:00 AM – 4:00 PM",
+  facebook: "Jomosbakers",
 };
 
 export default function ContactSection() {

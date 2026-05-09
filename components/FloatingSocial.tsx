@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function FloatingSocial() {
   const SOCIAL_LINKS = {
-    whatsapp: "https://wa.me/254712345678", // Replace with your WhatsApp number
+    whatsapp: "https://wa.me/254708115669", // Replace with your WhatsApp number
     facebook: "https://www.facebook.com/Jomosbakehouse", // Replace with your Facebook URL
   };
 

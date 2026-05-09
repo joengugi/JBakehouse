@@ -2,12 +2,17 @@
 
 import {useState} from "react";
 
+interface Variant {
+  label: string;   // e.g. "1 Kg", "Chocolate", "Large"
+  price: number;
+}
+
 interface CartItem {
   id: string;
   name: string;  // Add this property
   emoji: string; // Add this property
   qty: number;
-  price: number;
+  variants: Variant[];
 }
 
 export default function useCart() {
@@ -22,7 +27,7 @@ export default function useCart() {
   const updateQty  = (id: string | number, delta: number) => setCart(p =>
     p.map(i => i.id === id ? { ...i, qty: Math.max(1, i.qty + delta) } : i)
   );
-  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const total = cart.reduce((s, i) => s + i.variants[0].price * i.qty, 0);
   const count = cart.reduce((s, i) => s + i.qty, 0);
   return { cart, addItem, removeItem, updateQty, total, count };
 }

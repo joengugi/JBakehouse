@@ -21,7 +21,7 @@ const aboutBlocks = [
   {
     title: "Crafted with Passion",
     subtitle: "Every loaf tells a story",
-    text: "Jomos Bakehouse was born from a simple obsession: the perfect crust. What started as weekend baking in a small Gachie kitchen grew into one of Nairobi’s most loved artisan bakeries. Every recipe is rooted in patience, precision, and love.",
+    text: "Jomos Bakers was born from a simple obsession: the perfect crust. What started as weekend baking in a small Gachie kitchen grew into one of Nairobi’s most loved artisan bakeries. Every recipe is rooted in patience, precision, and love.",
     image: About1,
     reverse: false,
   },
@@ -246,7 +246,7 @@ export default function AboutSection() {
               marginBottom: "0.5rem",
             }}
           >
-            Since 2022.
+            Since 2024.
           </div>
           <div
             style={{

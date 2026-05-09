@@ -13,10 +13,15 @@ const T = {
 };
 
 // export default function CartDrawer({ cart, total, updateQty, removeItem, onClose, onCheckout })
-type CartItem = {
+interface Variant {
+  label: string;   // e.g. "1 Kg", "Chocolate", "Large"
+  price: number;
+}
+
+interface CartItem {
   id: string | number;
   name: string;
-  price: number;
+  variants: Variant[];
   qty: number;
   emoji: string;
 };
@@ -55,7 +60,7 @@ export default function CartDrawer({ cart, total, updateQty, removeItem, onClose
                     <span style={{ fontSize:"2rem" }}>{item.emoji}</span>
                     <div style={{ flex:1 }}>
                       <div style={{ fontFamily:"'Outfit', sans-serif", fontWeight:600, color:T.greenDeep, fontSize:"0.93rem" }}>{item.name}</div>
-                      <div style={{ fontFamily:"'Outfit', sans-serif", color:T.greenBrand, fontWeight:700, fontSize:"0.88rem" }}>KES {item.price * item.qty}</div>
+                      <div style={{ fontFamily:"'Outfit', sans-serif", color:T.greenBrand, fontWeight:700, fontSize:"0.88rem" }}>KES {item.variants[0]?.price * item.qty}</div>
                     </div>
                     <div style={{ display:"flex", alignItems:"center", gap:"8px" }}>
                       <button onClick={() => updateQty(item.id, -1)} style={{ background:"#E8F5E9", border:"none", borderRadius:"50%", width:"26px", height:"26px", cursor:"pointer", fontWeight:700, display:"flex", alignItems:"center", justifyContent:"center", color:T.greenDeep }}>−</button>

@@ -2,11 +2,16 @@
 
 import { useState } from "react";
 
+interface Variant {
+  label: string;   // e.g. "1 Kg", "Chocolate", "Large"
+  price: number;
+}
+
 interface CartItem {
   id: string | number;
   name: string;
   emoji: string;
-  price: number;
+  variants: Variant[];
   qty: number;
 }
 
@@ -102,7 +107,7 @@ export default function CheckoutModal({ cart, total, onClose }: CheckoutModalPro
                 {cart.map(item => (
                   <div key={item.id} style={{ display:"flex", justifyContent:"space-between", marginBottom:"0.4rem" }}>
                     <span style={{ fontFamily:"'Outfit', sans-serif", fontSize:"0.88rem", color:T.greenDeep }}>{item.emoji} {item.name} × {item.qty}</span>
-                    <span style={{ fontFamily:"'Outfit', sans-serif", fontSize:"0.88rem", fontWeight:700, color:T.greenDeep }}>KES {(item.price * item.qty).toLocaleString()}</span>
+                    <span style={{ fontFamily:"'Outfit', sans-serif", fontSize:"0.88rem", fontWeight:700, color:T.greenDeep }}>KES {(item.variants[0].price * item.qty).toLocaleString()}</span>
                   </div>
                 ))}
                 <div style={{ borderTop:"1px solid rgba(10,31,13,0.09)", marginTop:"0.75rem", paddingTop:"0.75rem", display:"flex", justifyContent:"space-between" }}>

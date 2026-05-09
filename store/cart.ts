@@ -2,10 +2,15 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+interface Variant {
+  label: string;   // e.g. "1 Kg", "Chocolate", "Large"
+  price: number;
+}
+
 interface CartItem {
   id: string;
   name: string;
-  price: number;
+  variants: Variant[];
   emoji: string;
   qty: number;
 }
@@ -41,7 +46,7 @@ export const useCartStore = create<CartStore>()(
 
       clearCart: () => set({ cart: [] }),
 
-      total: () => get().cart.reduce((sum, i) => sum + i.price * i.qty, 0),
+      total: () => get().cart.reduce((sum, i) => sum + i.variants[0]?.price * i.qty, 0),
       count: () => get().cart.reduce((sum, i) => sum + i.qty, 0),
     }),
     { name: "jomos-cart" }  // persists to localStorage

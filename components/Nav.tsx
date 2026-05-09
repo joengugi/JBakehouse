@@ -80,7 +80,7 @@ export default function Nav({ count, onCartOpen }: NavProps) {
           fontFamily: "'Cormorant Garamond', serif",
           fontSize: "1.45rem", fontWeight: 700, color: T.offWhite,
           letterSpacing: "0.03em",
-        }}>Jomo&apos;s Bakehouse</span>
+        }}>Jomo&apos;s Baker(S)</span>
       </div>
 
       {/* Links */}
