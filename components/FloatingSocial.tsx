@@ -1,12 +1,12 @@
 import Whatsapp from "../public/whatsapp.png";
-import Facebook from "../public/facebook.png";
+// import Facebook from "../public/facebook.png";
 
 import Image from "next/image";
 
 export default function FloatingSocial() {
   const SOCIAL_LINKS = {
     whatsapp: "https://wa.me/254708115669", // Replace with your WhatsApp number
-    facebook: "https://www.facebook.com/Jomosbakehouse", // Replace with your Facebook URL
+    // facebook: "https://www.facebook.com/Jomosbakehouse", // Replace with your Facebook URL
   };
 
   return (
@@ -51,7 +51,7 @@ export default function FloatingSocial() {
       </a>
 
       {/* Facebook Button */}
-      <a
+      {/* <a
         href={SOCIAL_LINKS.facebook}
         target="_blank"
         rel="noopener noreferrer"
@@ -79,7 +79,7 @@ export default function FloatingSocial() {
         }}
       >
         <Image src={Facebook} alt="Facebook" width={30} height={30} />
-      </a>
+      </a> */}
     </div>
   );
 }
