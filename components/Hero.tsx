@@ -15,7 +15,7 @@ const T = {
 };
 
 // ── Ticker (unchanged) ───────────────────────────────────────
-const TICKER_LABELS = ["🍞 SOURDOUGH","🥐 CROISSANTS","🎂 CUSTOM CAKES","☕ COLD BREW","🍓 TARTS","🌀 CINNAMON ROLLS"];
+const TICKER_LABELS = ["Mahamri","Doughnuts","Custom Cakes","Samosas","Kebabs","Black Forest", "White Forest", "Muffins", "Red Velvet Cake", "Fresh Coffee", "Hot Chocolate", "Fresh Juice"];
 const TICKER_ITEMS  = [
   ...TICKER_LABELS.map((t, i) => ({ label: t, key: `a-${i}` })),
   ...TICKER_LABELS.map((t, i) => ({ label: t, key: `b-${i}` })),
@@ -31,13 +31,13 @@ const SLIDES = [
     headline: ["Savor", "Every", "Moment."],
     // "Every" renders in italic gold — matched by highlightLine index
     highlightLine: 1,
-    body: "Artisan breads, flaky pastries and decadent cakes — handcrafted with patience and baked to perfection at our Westlands kitchen.",
+    body: "Artisan breads, flaky pastries and decadent cakes — handcrafted with patience and baked to perfection at our kitchen.",
     cta:  "View Our Menu →",
   },
   {
     image:    "/Baked2.jpg",
     eyebrow:  "72-hour slow fermentation",
-    headline: ["Bread as it", "Was Always", "Meant to Be."],
+    headline: ["Pastries as they", "Were Always", "Meant to Be."],
     highlightLine: 2,
     body: "Our sourdoughs are cold-fermented for 72 hours using heritage Kenyan wheat flour. No shortcuts. No preservatives. Just flour, water, salt and time.",
     cta:  "Browse our baked goods →",
@@ -370,7 +370,7 @@ export default function Hero() {
               display: "flex", gap: "0", marginTop: "3.5rem",
               borderTop: "1px solid rgba(245,245,238,0.08)", paddingTop: "2rem",
             }}>
-              {[["6+","Years"], ["40+","Menu Items"], ["4.9★","Rating"]].map(([num, label], i) => (
+              {[["4+","Years"], ["15+","Menu Items"], ["100%","Customer Satisfaction"]].map(([num, label], i) => (
                 <div key={label} style={{
                   flex: 1, paddingRight: "2rem",
                   borderRight: i < 2 ? "1px solid rgba(245,245,238,0.1)" : "none",

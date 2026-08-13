@@ -12,8 +12,11 @@ import CartDrawer from "@/components/CartDrawer";
 import CheckoutModal from "@/components/CheckoutModal";
 import useCart from "@/components/Carthook";
 import FloatingSocial from "@/components/FloatingSocial";
+import AdminLogin from "@/components/AdminLogin";
+
 export default function App() {
   const { cart, addItem, removeItem, updateQty, total, count } = useCart();
+  const [loginOpen, setLoginOpen] = useState(false);
   const [cartOpen,     setCartOpen]     = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
 
@@ -29,10 +32,14 @@ export default function App() {
 
 
       <ContactSection />
-      <Footer />
+
+      {loginOpen && (<AdminLogin onClose={() => setLoginOpen(false)} />)}
+      
+      <Footer onAdminLogin={() => setLoginOpen(true)} />
 
       <FloatingSocial />
 
+    
       {cartOpen && (
         <CartDrawer
           cart={cart} total={total}
@@ -47,6 +54,7 @@ export default function App() {
           onClose={() => setCheckoutOpen(false)}
         />
       )}
+
     </div>
   );
 }

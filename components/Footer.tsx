@@ -1,6 +1,10 @@
 
 import Image from 'next/image';
 
+interface FooterProps {
+  onAdminLogin: () => void;
+}
+
 const T = {
   greenDeep:   "#0A1F0D",
   greenDark:   "#122A16",
@@ -13,7 +17,7 @@ const T = {
   offWhite:    "#F5F5EE",
   black:       "#080C08",
 };
-export default function Footer() {
+export default function Footer({ onAdminLogin }: FooterProps) {
   return (
     <footer style={{
       background: T.black, borderTop: `1px solid rgba(240,196,25,0.1)`,
@@ -22,17 +26,43 @@ export default function Footer() {
       <div style={{ maxWidth: "1240px", margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1.5rem" }}>
         <div>
           <div style={{ fontFamily: "'Cormorant Garamond', serif", color: T.yellowGold, fontSize: "1.3rem", fontWeight: 700, marginBottom: "0.3rem" }}> <Image src="/logo.png" alt="Jomo's Bakehouse Logo" width={36} height={36} /></div>
-          <div style={{ fontFamily: "'Outfit', sans-serif", color: "rgba(245,245,238,0.35)", fontSize: "0.8rem" }}>Baked fresh in Nairobi since 2022</div>
+          <div style={{ fontFamily: "'Outfit', sans-serif", color: "rgba(245,245,238,0.35)", fontSize: "0.8rem" }}>Baked fresh in Nairobi since 2024</div>
         </div>
         <div style={{ fontFamily: "'Outfit', sans-serif", color: "rgba(245,245,238,0.28)", fontSize: "0.78rem", textAlign: "center" }}>
           © 2025 Jomos Bakers. All rights reserved.<br />
           Built with Next.js · Payments by M-Pesa · Notifications via WhatsApp
         </div>
-        <div style={{ display: "flex", gap: "1.5rem" }}>
-          {["Privacy", "Terms", "Facebook"].map(link => (
-            <span key={link} style={{ fontFamily: "'Outfit', sans-serif", color: "rgba(245,245,238,0.35)", fontSize: "0.82rem", cursor: "pointer" }}>{link}</span>
-          ))}
-        </div>
+        <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
+        {["Privacy", "Terms", "Whatsapp"].map(link => (
+        <span
+          key={link}
+          style={{
+          fontFamily: "'Outfit', sans-serif",
+          color: "rgba(245,245,238,0.35)",
+          fontSize: "0.82rem",
+          cursor: "pointer",
+          }}
+          >
+            {link}
+        </span>
+  ))}
+
+  <button
+    onClick={onAdminLogin}
+    style={{
+      background: "transparent",
+      border: "1px solid rgba(240,196,25,0.25)",
+      color: "rgba(245,245,238,0.45)",
+      borderRadius: "3px",
+      padding: "7px 12px",
+      fontFamily: "'Outfit', sans-serif",
+      fontSize: "0.75rem",
+      cursor: "pointer",
+    }}
+  >
+    Admin Login
+  </button>
+</div>
       </div>
     </footer>
   );

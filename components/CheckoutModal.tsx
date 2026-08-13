@@ -52,7 +52,7 @@ export default function CheckoutModal({ cart, total, onClose }: CheckoutModalPro
     { key:"name",  label:"Full Name",       placeholder:"Jane Wanjiku",          value:name,  setter:setName  },
     { key:"phone", label:"M-Pesa Phone",    placeholder:"0712 345 678",          value:phone, setter:setPhone },
     ...(type === "delivery"
-      ? [{ key:"addr", label:"Delivery Address", placeholder:"e.g. Kilimani, Nairobi", value:addr, setter:setAddr }]
+      ? [{ key:"addr", label:"Delivery Address", placeholder:"e.g. Ruaka, Nairobi", value:addr, setter:setAddr }]
       : []
     ),
   ];

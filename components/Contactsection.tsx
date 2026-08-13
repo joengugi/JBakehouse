@@ -115,7 +115,6 @@ export default function ContactSection() {
               ["📞", "Phone", BAKERY_INFO.phone],
               ["✉️", "Email", BAKERY_INFO.email],
               ["🕐", "Hours", BAKERY_INFO.hours],
-              ["📸", "Facebook", BAKERY_INFO.facebook],
             ].map(([icon, label, val]) => (
               <div key={label} style={{
                 background: "#fff", borderRadius: "5px",

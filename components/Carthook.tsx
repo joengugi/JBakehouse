@@ -16,7 +16,7 @@ interface CartItem {
 }
 
 export default function useCart() {
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cart, setCart] = useState<CartItem[]>([]);/* Array */
   const addItem    = (item: CartItem) => setCart(p => {
     const exists = p.find(i => i.id === item.id);
     return exists
