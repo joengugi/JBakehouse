@@ -1,4 +1,4 @@
-// src/lib/auth.ts
+// lib/auth.ts
 
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -7,13 +7,26 @@ import bcrypt from "bcryptjs";
 
 import { prisma } from "@/lib/prisma";
 
+/**
+ * NextAuth configuration
+ *
+ * Authentication methods:
+ * 1. Email + Password
+ * 2. Google OAuth
+ *
+ * Authorization:
+ * - Only active users with role ADMIN can access
+ *   the administration system.
+ *
+ * Session:
+ * - JWT-based
+ */
 export const authOptions: NextAuthOptions = {
   /*
    * ============================================================
    * PROVIDERS
    * ============================================================
    */
-
   providers: [
     /*
      * ----------------------------------------------------------
@@ -30,6 +43,7 @@ export const authOptions: NextAuthOptions = {
           type: "email",
           placeholder: "admin@jomosbakery.com",
         },
+
         password: {
           label: "Password",
           type: "password",
@@ -39,7 +53,8 @@ export const authOptions: NextAuthOptions = {
 
       async authorize(credentials) {
         /*
-         * 1. Make sure the credentials were supplied.
+         * Step 1:
+         * Make sure credentials were supplied.
          */
         if (!credentials?.email || !credentials?.password) {
           return null;
@@ -49,7 +64,8 @@ export const authOptions: NextAuthOptions = {
 
         try {
           /*
-           * 2. Find the user in PostgreSQL.
+           * Step 2:
+           * Find the user in PostgreSQL.
            */
           const user = await prisma.user.findUnique({
             where: {
@@ -58,8 +74,11 @@ export const authOptions: NextAuthOptions = {
           });
 
           /*
-           * 3. Only active administrators are allowed
-           *    to authenticate through this provider.
+           * Step 3:
+           * The user must:
+           * - exist
+           * - be active
+           * - have ADMIN privileges
            */
           if (
             !user ||
@@ -70,14 +89,19 @@ export const authOptions: NextAuthOptions = {
           }
 
           /*
-           * 4. Google-only accounts may not have a password.
+           * Step 4:
+           * Credentials-based users need a password hash.
+           *
+           * Google-only accounts may have null passwordHash.
            */
           if (!user.passwordHash) {
             return null;
           }
 
           /*
-           * 5. Compare supplied password with bcrypt hash.
+           * Step 5:
+           * Compare the supplied password with the
+           * bcrypt hash stored in PostgreSQL.
            */
           const passwordValid = await bcrypt.compare(
             credentials.password,
@@ -89,19 +113,27 @@ export const authOptions: NextAuthOptions = {
           }
 
           /*
-           * 6. Return only safe user information.
+           * Step 6:
+           * Return only safe user information.
            *
-           * NEVER return passwordHash here.
+           * Never return passwordHash.
            */
           return {
             id: user.id,
-            email: user.email,
             name: user.name,
+            email: user.email,
             role: "admin",
             image: user.image,
           };
         } catch (error) {
-          console.error("[Auth] Credentials error:", error);
+          console.error(
+            "[NextAuth] Credentials authorization error:",
+            error
+          );
+
+          /*
+           * Do not expose database errors to the user.
+           */
           return null;
         }
       },
@@ -111,36 +143,49 @@ export const authOptions: NextAuthOptions = {
      * ----------------------------------------------------------
      * GOOGLE OAUTH
      * ----------------------------------------------------------
+     *
+     * Google authentication is only enabled when both
+     * Google environment variables exist.
+     *
+     * This allows credentials login to work locally before
+     * Google OAuth has been configured.
+     * ----------------------------------------------------------
      */
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID ?? "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+    ...(process.env.GOOGLE_CLIENT_ID &&
+    process.env.GOOGLE_CLIENT_SECRET
+      ? [
+          GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
 
-      /*
-       * Keep account linking restrictive.
-       */
-      allowDangerousEmailAccountLinking: false,
-    }),
+            /*
+             * Do not automatically link accounts based only
+             * on an email match.
+             */
+            allowDangerousEmailAccountLinking: false,
+          }),
+        ]
+      : []),
   ],
 
   /*
    * ============================================================
-   * SESSION CONFIGURATION
+   * SESSION
    * ============================================================
    */
-
   session: {
+    /*
+     * We are using JWT sessions rather than database sessions.
+     */
     strategy: "jwt",
 
     /*
-     * Maximum session lifetime:
-     * 24 hours
+     * Maximum session lifetime: 24 hours.
      */
     maxAge: 24 * 60 * 60,
 
     /*
-     * Refresh/update interval:
-     * 1 hour
+     * Update the session token approximately every hour.
      */
     updateAge: 60 * 60,
   },
@@ -150,36 +195,47 @@ export const authOptions: NextAuthOptions = {
    * CALLBACKS
    * ============================================================
    */
-
   callbacks: {
     /*
      * ----------------------------------------------------------
      * signIn()
      *
-     * Runs when a user attempts to authenticate.
+     * Determines whether authentication should be allowed.
      *
      * Credentials:
-     *   authorize() has already verified the user.
+     * authorize() has already completed all checks.
      *
      * Google:
-     *   We must check OUR database to make sure the
-     *   Google account belongs to an active admin.
+     * Google confirms identity, but PostgreSQL determines
+     * whether the account has administrator privileges.
      * ----------------------------------------------------------
      */
     async signIn({ user, account }) {
       try {
         /*
-         * Credentials login was already validated
-         * inside authorize().
+         * ------------------------------------------------------
+         * Credentials login
+         * ------------------------------------------------------
+         *
+         * authorize() already verified:
+         * - user exists
+         * - account is active
+         * - role is ADMIN
+         * - password is correct
          */
         if (account?.provider === "credentials") {
           return true;
         }
 
         /*
+         * ------------------------------------------------------
          * Google login
+         * ------------------------------------------------------
          */
         if (account?.provider === "google") {
+          /*
+           * Google must provide an email address.
+           */
           if (!user.email) {
             return false;
           }
@@ -187,8 +243,8 @@ export const authOptions: NextAuthOptions = {
           const email = user.email.trim().toLowerCase();
 
           /*
-           * Find the Google user's email in our
-           * PostgreSQL users table.
+           * Find the corresponding account in our
+           * PostgreSQL database.
            */
           const admin = await prisma.user.findUnique({
             where: {
@@ -197,8 +253,12 @@ export const authOptions: NextAuthOptions = {
           });
 
           /*
-           * Authentication by Google does NOT automatically
-           * grant administrator privileges.
+           * Google authentication alone is NOT enough.
+           *
+           * The account must:
+           * - exist in our database
+           * - be active
+           * - have ADMIN role
            */
           if (
             !admin ||
@@ -206,34 +266,39 @@ export const authOptions: NextAuthOptions = {
             admin.role !== "ADMIN"
           ) {
             console.warn(
-              `[Auth] Unauthorized Google login attempt: ${email}`
+              `[NextAuth] Unauthorized Google login attempt: ${email}`
             );
 
             return false;
           }
 
           /*
-           * Replace the Google user data with the
-           * authoritative information from our database.
+           * PostgreSQL is our authoritative source for
+           * application identity and role.
            */
           user.id = admin.id;
-          user.role = "admin";
           user.name = admin.name;
+          user.email = admin.email;
+          user.role = "admin";
           user.image = admin.image;
 
           console.log(
-            `[Auth] Google admin login successful: ${email}`
+            `[NextAuth] Google admin login successful: ${email}`
           );
 
           return true;
         }
 
         /*
-         * Unknown provider
+         * Unknown/unconfigured provider.
          */
         return false;
       } catch (error) {
-        console.error("[Auth] signIn callback error:", error);
+        console.error(
+          "[NextAuth] signIn callback error:",
+          error
+        );
+
         return false;
       }
     },
@@ -242,12 +307,15 @@ export const authOptions: NextAuthOptions = {
      * ----------------------------------------------------------
      * jwt()
      *
-     * Runs when the JWT is created/updated.
+     * Runs when a JWT is created or updated.
      *
-     * We copy the user's identity and role into the token.
+     * We copy only the information needed later.
      * ----------------------------------------------------------
      */
     async jwt({ token, user }) {
+      /*
+       * `user` is available during the initial sign-in.
+       */
       if (user) {
         token.id = user.id;
         token.email = user.email ?? undefined;
@@ -261,7 +329,8 @@ export const authOptions: NextAuthOptions = {
      * ----------------------------------------------------------
      * session()
      *
-     * Exposes selected JWT information to the application.
+     * Makes selected JWT information available through
+     * `session.user`.
      * ----------------------------------------------------------
      */
     async session({ session, token }) {
@@ -280,10 +349,13 @@ export const authOptions: NextAuthOptions = {
 
   /*
    * ============================================================
-   * CUSTOM AUTHENTICATION PAGES
+   * CUSTOM PAGES
    * ============================================================
+   *
+   * These routes should eventually exist:
+   *
+   * /admin/login
    */
-
   pages: {
     signIn: "/admin/login",
     error: "/admin/login",
@@ -294,23 +366,26 @@ export const authOptions: NextAuthOptions = {
    * ============================================================
    * EVENTS
    * ============================================================
+   *
+   * Useful for development/debugging.
+   * Avoid logging passwords, tokens, or other secrets.
+   * ============================================================
    */
-
   events: {
     async signIn({ user, account }) {
       console.log(
-        `[Auth Event] signIn - User: ${user.email}, Provider: ${account?.provider}`
+        `[NextAuth] Sign-in successful - User: ${user.email}, Provider: ${account?.provider}`
       );
     },
 
     async signOut(message) {
       const email =
-        "token" in message
-          ? message.token?.email
-          : message.session?.user?.email;
+        message.token?.email ??
+        message.session?.user?.email ??
+        "unknown";
 
       console.log(
-        `[Auth Event] signOut - User: ${email ?? "unknown"}`
+        `[NextAuth] Sign-out - User: ${email}`
       );
     },
   },
@@ -320,9 +395,17 @@ export const authOptions: NextAuthOptions = {
    * SECURITY
    * ============================================================
    */
-
   secret: process.env.NEXTAUTH_SECRET,
 
+  /*
+   * Only use secure cookies once the application is running
+   * over HTTPS in production.
+   */
   useSecureCookies:
     process.env.NODE_ENV === "production",
+
+  /*
+   * Keep this false during development.
+   */
+  debug: process.env.NODE_ENV === "development",
 };
